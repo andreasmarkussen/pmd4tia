@@ -16,9 +16,11 @@ The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7
   </description>
   <properties>
     <property name="xpath">
+  <properties>
+    <property name="xpath">
     <value>
 <![CDATA[
-//ProgramUnit/Statement[1]//PrimaryExpression[contains(@CanonicalImage,'Z_PROGRAM')]
+//ProgramUnit/Statement[1]//PrimaryPrefix/Name[not(contains(@CanonicalImage,'Z_PROGRAM'))]
 ]]>
     </value>
     </property>
@@ -27,20 +29,14 @@ The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7
   <example>
 <![CDATA[
 create or replace function uf60_yno_np_damage_cause(p_claim_case_no cla_item.cla_case_no%type) return number is
-  ------------------------------------------------------------------------------
-  w_program varchar2(128) := p0000.program;
 
 begin
-  z_program('uf60_yno_np_damage_cause');
-  z_trace('p_claim_case_no = ' || p_claim_case_no);
-
-exception  when others 
-   then
-    z_error_handle;
+  just_business_logic_no_z_program();
 end;
 /
 ]]>
   </example>
+
 </rule>
 
 </ruleset>
