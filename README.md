@@ -3,9 +3,9 @@ Proof of concept implementation for TIAs public PLSQL Database Best Practices us
 Use of this functionality requries you to have rights to use TIA - The Insurance Application. See www.tia.dk 
 
 # Usage (to be improved)
-Download the latest version of [PMD](https://pmd.github.io/)
-Clone this repo 
-Run PMD with the rules 
+ 1. Download the latest version of [PMD](https://pmd.github.io/)
+ 2. Clone this repo 
+ 3. Run PMD with the rules 
 
 # Rules Overview
 ## Rules from PLSQL Standards from wiki7.tia.dk
