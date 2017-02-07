@@ -8,17 +8,45 @@
 The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7. 
   </description>
   
-<rule  name="ProgramMustCallZProgramFirst"
-  message="Programs must call z_program as the first statement. "
-  class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule  name="ProgramMustCallZProgramFirst"
+        message="Programs must call z_program as the first statement."
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+      <description>
+      z_program: Must be called in the beginning of each procedure/function and after each call to other procedure/function.
+      </description>
+       <properties>
+        <property name="xpath">
+        <value>
+    <![CDATA[
+    //ProgramUnit/Statement[1]//PrimaryPrefix/Name[not(contains(@CanonicalImage,'Z_PROGRAM'))]
+    ]]>
+        </value>
+        </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+    create or replace function uf60_yno_np_damage_cause(p_claim_case_no cla_item.cla_case_no%type) return number is
+
+    begin
+      just_business_logic_no_z_program();
+    end;
+    /
+    ]]>
+      </example>
+    </rule>
+    
+    <rule  name="ZProgramInTheEndOfBasicBlock"
+        message="Remember to reset the z_program in the end of your basic block."
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
   <description>
-  z_program: Must be called in the beginning of each procedure/function and after each call to other procedure/function.
+  Always call z_program(w_program) in the end of your basic block. 
   </description>
-   <properties>
+  <properties>
     <property name="xpath">
     <value>
 <![CDATA[
-//ProgramUnit/Statement[1]//PrimaryPrefix/Name[not(contains(@CanonicalImage,'Z_PROGRAM'))]
+//ProgramUnit/Statement[last()]//PrimaryPrefix/Name[@Image='z_program']/../../PrimarySuffix//Expression[@Image='w_program']
 ]]>
     </value>
     </property>
@@ -29,13 +57,16 @@ The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7
 create or replace function uf60_yno_np_damage_cause(p_claim_case_no cla_item.cla_case_no%type) return number is
 
 begin
-  just_business_logic_no_z_program();
+  just_business_logic();
+  z_program(w_program);
+  forgot_to_call_z_program_in_the_end();
 end;
 /
 ]]>
   </example>
 
 </rule>
+
 
 </ruleset>
 
