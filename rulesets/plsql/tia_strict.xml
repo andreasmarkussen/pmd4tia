@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<ruleset name="TIA Strict"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7. 
+  </description>
+  
+<rule  name="ProgramMustCallZProgramFirst"
+  message="Programs must call z_program as the first statement. "
+  class="net.sourceforge.pmd.lang.rule.XPathRule">
+  <description>
+  z_program: Must be called in the beginning of each procedure/function and after each call to other procedure/function.
+  </description>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//ProgramUnit/Statement[1]//PrimaryExpression[contains(@CanonicalImage,'Z_PROGRAM')]
+]]>
+    </value>
+    </property>
+  </properties>
+  <priority>3</priority>
+  <example>
+<![CDATA[
+create or replace function uf60_yno_np_damage_cause(p_claim_case_no cla_item.cla_case_no%type) return number is
+  ------------------------------------------------------------------------------
+  w_program varchar2(128) := p0000.program;
+
+begin
+  z_program('uf60_yno_np_damage_cause');
+  z_trace('p_claim_case_no = ' || p_claim_case_no);
+
+exception  when others 
+   then
+    z_error_handle;
+end;
+/
+]]>
+  </example>
+</rule>
+
+</ruleset>
+
