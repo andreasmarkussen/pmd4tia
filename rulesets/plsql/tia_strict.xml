@@ -46,7 +46,7 @@ The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7
     <property name="xpath">
     <value>
 <![CDATA[
-//ProgramUnit/Statement[last()]//PrimaryPrefix/Name[@Image='z_program']/../../PrimarySuffix//Expression[@Image='w_program']
+//ProgramUnit/Statement[last()]//PrimaryPrefix/Name[@Image='z_program']
 ]]>
     </value>
     </property>
