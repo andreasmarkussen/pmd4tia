@@ -14,9 +14,7 @@ The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7
   <description>
   z_program: Must be called in the beginning of each procedure/function and after each call to other procedure/function.
   </description>
-  <properties>
-    <property name="xpath">
-  <properties>
+   <properties>
     <property name="xpath">
     <value>
 <![CDATA[
