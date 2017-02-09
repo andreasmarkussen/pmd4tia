@@ -1,14 +1,11 @@
-CREATE OR REPLACE package svc_dbs is
+CREATE OR REPLACE package real_sample2 is
   --------------------------------------------------------------------------
-  -- Subject    : Common service utilities for DBS service
-  -- File       : $Release: @releaseVersion@ $
-  --              $Id: SVC_DBS.pls 71051 2016-11-09 13:40:09Z apr $
-  -- Copyright (c) TIA Technology A/S 1998-2011. All rights reserved.
-  --
+  -- Subject    : Common service utilities for Sample service
+
   -- common / supportive / utility package for case service.
   --------------------------------------------------------------------------
 
-  gc_package              constant varchar2(30) := 'svc_dbs';
+  gc_package              constant varchar2(30) := 'real_sample2';
   gc_area_code            constant varchar2(3) := 'DBS';
   log_status_code_success constant varchar2(10) := 'SUCCESS';
   log_status_code_error   constant varchar2(10) := 'ERROR';
@@ -121,11 +118,11 @@ CREATE OR REPLACE package svc_dbs is
                      ,p_program    varchar2);
 end;
 /
-CREATE OR REPLACE package body svc_dbs is
+CREATE OR REPLACE package body real_sample2 is
   --------------------------------------------------------------------------
   -- Subject    : Common service utilities for DBS service
   -- File       : $Release: @releaseVersion@ $
-  --              $Id: SVC_DBS.pls 71051 2016-11-09 13:40:09Z apr $
+  --              $Id: real_sample2.pls 71051 2016-11-09 13:40:09Z apr $
   -- Copyright (c) TIA Technology A/S 1998-2011. All rights reserved.
   --
   -- common / supportive / utility package for case service.
@@ -236,7 +233,7 @@ CREATE OR REPLACE package body svc_dbs is
                               ,3);
       p0000.trace_name  := nvl(x_get_var(w_site_pref
                                         ,'NAME')
-                              ,'SVC_DBS_TRACE_' ||
+                              ,'real_sample2_TRACE_' ||
                                to_char(sysdate
                                       ,'yyyymmddHHMI'));
     else
@@ -3298,75 +3295,7 @@ CREATE OR REPLACE package body svc_dbs is
     ------------------------------------------------------------------------------
     -- Create response object                                                   --
     ------------------------------------------------------------------------------
-    -- Response param 'returncode'
-    p_operation_response.returncode := 1;
-  
-    -- Response param 'vatobliged'
-    p_operation_response.vatobliged := substr(bno73.uf73_hfg_rs_parm_mva()
-                                             ,1
-                                             ,1);
-  
-    -- Response param 'reduction'
-    p_operation_response.reduction := bno73.uf73_hfg_rs_parm_avkortbel();
-  
-    -- Response param 'reductionpercent'
-    p_operation_response.reductionpercent := bno73.uf73_hfg_rs_parm_avkortpros();
-  
-    -- Response param 'ownriskdeduction'
-    p_operation_response.ownriskdeduction := bno73.uf73_hfg_rs_parm_egenandel_fo();
-  
-    if w_taksttype = 2 -- = 'glass claim'
-    then
-      -- Response param 'companydatatext'
-      p_operation_response.companydatatext := substr(bno73.uf73_hfg_rs_parm_tekst1()
-                                                    ,1
-                                                    ,1000);
-    
-    end if;
-    ------------------------------------------------------------------------------
-    -- Response param 'ContactInfo'
-    ------------------------------------------------------------------------------
-    bno71.get_mapping_details(w_ws_def_name
-                             ,'ContactInfo'
-                             ,w_is_configurable
-                             ,w_tia_table_name
-                             ,w_tia_column_name
-                             ,w_add_condition
-                             ,w_user_function
-                             ,w_user_function_name);
-  
-    w_company_id_no := x_site_preference('YNO_DBS_COMPANY_ID_NO');
-  
-    if w_user_function = 'Y'
-    then
-      dbs_trace('Kontakt_info - executing user function ' ||
-                w_user_function_name
-               ,c_program);
-      execute immediate 'begin :Kontakt_info := ' || w_user_function_name ||
-                        '; end;'
-        using out w_kontakt_info;
-    else
-      w_select := 'select ' || w_tia_column_name;
-      w_from   := ' from ' || w_tia_table_name;
-      w_where  := ' where id_no = :w_company_id_no';
-    
-      if w_add_condition is not null
-      then
-        w_where := w_where || ' and ' || w_add_condition;
-      end if;
-      w_query := w_select || w_from || w_where;
-    
-      dbs_trace('Kontakt_info - executing query: ' || w_query
-               ,c_program);
-      open c_cursor for w_query
-        using w_company_id_no;
-      fetch c_cursor
-        into w_kontakt_info;
-      close c_cursor;
-    end if;
-    p_operation_response.contactinfo := substr(w_kontakt_info
-                                              ,1
-                                              ,70);
+    --  LINES DELETED -- On purpose to make this sample public..
   
     dbs_trace('Kontakt_info: ' || p_operation_response.contactinfo
              ,c_program);
@@ -4191,5 +4120,5 @@ CREATE OR REPLACE package body svc_dbs is
     
   end sendfakturagrunnlag;
 
-end svc_dbs;
+end real_sample2;
 /

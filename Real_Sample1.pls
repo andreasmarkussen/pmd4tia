@@ -1,12 +1,9 @@
-CREATE OR REPLACE package svc_dbs_oppdrag is
+CREATE OR REPLACE package real_sample is
   --------------------------------------------------------------------------
-  -- Subject    : DBS Oppdrag service
-  -- File       : $Release: @releaseVersion@ $
-  --              $Id: svc_dbs_oppdrag.pls 72122 2016-12-01 15:04:50Z apr $
-  -- Copyright (c) TIA Technology A/S 1998-2015. All rights reserved.
+ 
   --------------------------------------------------------------------------
 
-  gc_package              constant varchar2(30) := 'svc_dbs_oppdrag';
+  gc_package              constant varchar2(30) := 'real_sample';
   log_status_code_success constant varchar2(10) := 'SUCCESS';
   log_status_code_error   constant varchar2(10) := 'ERROR';
 
@@ -41,11 +38,11 @@ end;
 /
 
 
-CREATE OR REPLACE package body svc_dbs_oppdrag is
+CREATE OR REPLACE package body real_sample is
   --------------------------------------------------------------------------
   -- Subject    : DBS Oppdrag service
   -- File       : $Release: @releaseVersion@ $
-  --              $Id: svc_dbs_oppdrag.pls 72122 2016-12-01 15:04:50Z apr $
+  --              $Id: real_sample.pls 72122 2016-12-01 15:04:50Z apr $
   -- Copyright (c) TIA Technology A/S 1998-2015. All rights reserved.
   --------------------------------------------------------------------------
   procedure set_decision(p_sop_response in out obj_dbs_send_oppdrag_response
@@ -1851,30 +1848,5 @@ CREATE OR REPLACE package body svc_dbs_oppdrag is
                                              ,p_svc_error_code => c_msg_id_other
                                              ,p_result         => p_result);
   end sendoppdrag;
-
-  --------------------------------------------------------------------------
-    procedure sendstatus(p_input_token in obj_input_token,
-                       p_request     in obj_dbs_send_status_request,
-                       p_response    out nocopy obj_dbs_send_status_response,
-                       p_result      out nocopy obj_result) is
-
-    c_program constant varchar2(32) := 'sendStatus';
-    v_input_token obj_input_token;
-    w_logging_req_seq_no   number;
-    c_msg_id_other     constant varchar2(17) := 'DBS-OPP-020-99999';
-
-  begin
-    
-    trace_configuration;
-    dbs_trace('START sendStatus', c_program);
-  
-    --call to uf_72_oppdrag_sendstatus
-    bno72.uf_72_oppdrag_sendstatus(p_input_token => p_input_token,
-                                   p_request     => p_request,
-                                   p_response    => p_response,
-                                   p_result      => p_result);
-                                   
-  end sendStatus;
-
 end;
 /

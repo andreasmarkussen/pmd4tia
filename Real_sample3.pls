@@ -1,12 +1,10 @@
-create or replace package svc_dbs_oppdragk is
-  --------------------------------------------------------------------------
-  -- Subject    : DBS Oppdragk service
-  -- File       : $Release: @releaseVersion@ $
-  --              $Id: svc_dbs_oppdragk.pls 71828 2016-11-25 06:44:44Z apr $
-  -- Copyright (c) TIA Technology A/S 1998-2015. All rights reserved.
+create or replace package real_sample3 is
   --------------------------------------------------------------------------
 
-  gc_package              constant varchar2(30) := 'svc_dbs_oppdragk';
+
+  --------------------------------------------------------------------------
+
+  gc_package              constant varchar2(30) := 'real_sample3';
   gc_sendoppdragk         constant varchar2(30) := 'sendOppdragK';
   gc_sendstatusk          constant varchar2(30) := 'sendStatusK';
   
@@ -22,10 +20,10 @@ create or replace package svc_dbs_oppdragk is
   -- This function sets return for sendoppdragK and sendstatusk operations.
   --
   -- Parameters:
-  --   p_operation        Should be set either svc_dbs_oppdragk.gc_sendoppdragk or
+  --   p_operation        Should be set either real_sample3.gc_sendoppdragk or
   --                      svc_dbs.oppdragk.gc_sendstatusk.
   --   p_return_code      Should be set either gc_rc_confirmed, gc_rc_duplicate, 
-  --                      gc_rc_error_input or gc_rc_other_error of svc_dbs_oppdragk spec.
+  --                      gc_rc_error_input or gc_rc_other_error of real_sample3 spec.
   --   p_comment_id       If it is provided, then message is taken from 'YNO_DBS_SVT_DECISION_COMMENT'
   --   p_comment_message  It overrides p_comment_id. Custom message.
   ------------------------------------------------------------------------------
@@ -61,11 +59,11 @@ create or replace package svc_dbs_oppdragk is
 
 end;
 /
-create or replace package body svc_dbs_oppdragk is
+create or replace package body real_sample3 is
   --------------------------------------------------------------------------
   -- Subject    : DBS Oppdragk service
   -- File       : $Release: @releaseVersion@ $
-  --              $Id: svc_dbs_oppdragk.pls 71828 2016-11-25 06:44:44Z apr $
+  --              $Id: real_sample3.pls 71828 2016-11-25 06:44:44Z apr $
   -- Copyright (c) TIA Technology A/S 1998-2015. All rights reserved.
   --------------------------------------------------------------------------
   gw_statusk_response  obj_dbs_send_statusk_response;
@@ -379,17 +377,6 @@ create or replace package body svc_dbs_oppdragk is
       return;
     end if;
     
-    -- get bank account number from claim item
-    get_varchar_val(p_seq_no      => w_cla_item.seq_no,
-                    p_ws_name     => 'OppdragK',
-                    p_ws_method   => 'SendOppdragK',
-                    p_ws_flow     => 'RQ',
-                    p_ws_tag_name => 'PaymentBankAccountNumber',
-                    p_value       => w_bank_account);
-  
-    if w_bank_account is null then
-      null; -- TODO Error handling
-    end if;
    
     w_amount := svc_dbs.round_decimals(bno72.uf_72_statusk_calc_comp_amt(p_request));
   
@@ -466,13 +453,7 @@ create or replace package body svc_dbs_oppdragk is
                  p_return_code => gc_rc_other_error,
                  p_comment_message => p_error_message);
     else
-      --automatic payout claim RE-EX
-      w_input_token                   := obj_input_token();
-      w_input_token.user_id           := x_site_preference('YNO_DBS_CLAIM_USER_ID');
-      w_claim_acc_item.claim_no       := p_request.claim_number_dbs;
-      w_claim_acc_item.payment_method := x_site_preference('YNO_DBS_PAYMENT_METHOD'); ----Should it??
-    
-      -- acc_payment_details for payment
+       -- acc_payment_details for payment
       open c_means_pay_no(w_claim_acc_item.receiver_id_no, w_claim_acc_item.payment_method, w_bank_account);
       fetch c_means_pay_no
         into w_means_pay_no;
@@ -505,7 +486,6 @@ create or replace package body svc_dbs_oppdragk is
         
       end if;
     
-      bno72.uf_72_post_create_acc_item(w_claim_acc_item.acc_item_no);
     end if;
 
   exception
@@ -541,16 +521,7 @@ create or replace package body svc_dbs_oppdragk is
   
    --Get current estimate number:
    --it is either the one in request or from user function if it is configurable in it
-   bno71.get_mapping_details('OppdragK',
-                             'SendOppdragK',
-                             'RQ',
-                             'EstimateNumber',
-                             w_is_configurable,
-                             w_tia_table_name,
-                             w_tia_column_name_n,
-                             w_add_condition,
-                             w_user_function,
-                             w_user_function_name);
+
     
    if (w_user_function = 'Y') then
         execute immediate '
@@ -600,16 +571,7 @@ create or replace package body svc_dbs_oppdragk is
                    and item_type = ''RE''
                    and subitem_type = ''DBSK''';   
                    
-   open w_cursor for w_query 
-     using p_request.claim_number;
-   fetch w_cursor 
-     into w_prev_estimate_number,
-          w_prev_estimate_version;
-   close w_cursor;
-   
-   dbs_trace('w_prev_estimate_number: ' || w_prev_estimate_number ||
-             ', w_prev_estimate_version: ' || w_prev_estimate_version, c_program);                    
-   
+
    if w_prev_estimate_number is not null and w_prev_estimate_version is not null then 
      if w_prev_estimate_number = w_curr_estimate_number and 
        w_prev_estimate_version >= w_curr_estimate_version then 
