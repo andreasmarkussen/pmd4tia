@@ -9,6 +9,7 @@ The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7
   </description>
   
     <rule  name="ProgramMustCallZProgramFirst"
+	   language="plsql"
         message="Programs must call z_program as the first statement."
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
@@ -23,7 +24,6 @@ The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7
         </value>
         </property>
       </properties>
-      <priority>3</priority>
       <example>
     <![CDATA[
     create or replace function uf60_yno_np_damage_cause(p_claim_case_no cla_item.cla_case_no%type) return number is
@@ -37,6 +37,7 @@ The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7
     </rule>
     
     <rule  name="ZProgramInTheEndOfBasicBlock"
+	   language="plsql"
         message="Remember to reset the z_program in the end of your basic block."
           class="net.sourceforge.pmd.lang.rule.XPathRule">
   <description>
@@ -51,7 +52,6 @@ The TIA Strict ruleset is based on the PLSQL Developement standards on the wiki7
     </value>
     </property>
   </properties>
-  <priority>3</priority>
   <example>
 <![CDATA[
 create or replace function uf60_yno_np_damage_cause(p_claim_case_no cla_item.cla_case_no%type) return number is
@@ -66,7 +66,4 @@ end;
   </example>
 
 </rule>
-
-
 </ruleset>
-
